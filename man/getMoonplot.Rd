@@ -3,11 +3,29 @@
 \name{getMoonplot}
 \alias{getMoonplot}
 \alias{getMoonplot.MCA}
+\alias{getMoonplot.CA}
 \title{Get a moonplot from MCA}
 \usage{
 getMoonplot(result, ...)
 
-\method{getMoonplot}{MCA}(result, rextra = 0.1, textmax = 0.2)
+\method{getMoonplot}{MCA}(
+  result,
+  rextra = 0.1,
+  textmax = 0.2,
+  flip = F,
+  row_col = NULL,
+  col_col = NULL
+)
+
+\method{getMoonplot}{CA}(
+  result,
+  rextra = 0.1,
+  textmax = 0.2,
+  flip = F,
+  label_rows = F,
+  row_col = NULL,
+  col_col = NULL
+)
 }
 \arguments{
 \item{result}{The result of the correspondence analysis or multiple correspondence analysis.s}
@@ -15,10 +33,24 @@ getMoonplot(result, ...)
 \item{rextra}{Space between the outermost point and the edges of the moon.}
 
 \item{textmax}{Size of the halo around the moon reserved for category names.}
+
+\item{flip}{Flip the text on the left side of the plot?}
+
+\item{row_col}{A vector of the same size as the number of rows / individuals, mapping onto the colour of the row/individual points.}
+
+\item{col_col}{A vector of the same size as the number of columns (CA) / variables (MCA), mapping onto the colour of the column/variable points.}
 }
 \value{
 A \code{ggplot} object.
 }
 \description{
 Get a moonplot from MCA
+}
+\examples{
+data(tea)
+res.mca = MCA(tea, quanti.sup=19, quali.sup=20:36, graph = F)
+getMoonplot(res.mca, flip = T, row_col = tea[,20])
+data(children)
+res.ca = CA(children, row.sup = 15:18, col.sup = 6:8, graph = F)
+getMoonplot(res.ca, flip = T)
 }
