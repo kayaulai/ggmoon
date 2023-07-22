@@ -92,11 +92,12 @@ getMoonplot_general = function(row_coords, col_coords, rextra = .1, textmax = .2
 
   point_aes = aes()
   if(!is.null(row_col)){
-    point_aes = aes(col = as.factor(row_col))
+    point_aes = aes(col = as.factor(row_col),
+                    shape = as.factor(row_col))
   }
 
   plot_rows = ggplot(row_df, aes(x = theta_row, y = norms_row)) +
-    geom_point(mapping = point_aes) +
+    geom_count(mapping = point_aes, position = "jitter") +
     scale_colour_discrete() +
     scale_x_continuous(limits = c(0, 2 * pi), expand = c(0, 0)) +
     scale_y_continuous(breaks = max(norms_row) + rextra,
