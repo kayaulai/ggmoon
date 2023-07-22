@@ -58,7 +58,7 @@ getMoonplot = function(result, ...){
 #' getMoonplot(res.mca, flip = T, row_col = tea[,20])
 
 getMoonplot.MCA = function(result, rextra = .1, textmax = .2, nudge_x_var = .3, flip = F, ind_col = NULL, var_col = NULL){
-  getMoonplot_general(result$ind$coord, result$var$coord, rextra = rextra, textmax = textmax, nudge_x_col = nudge_x_var, flip = flip, row_col = ind_col, col_col = var_col, rotate_col_text = rotate_var_text)
+  getMoonplot_general(result$ind$coord, apply(result$var$coord, 1, function(x) x / sqrt(t(result$eig[1:ncol(result$var$coord),1]))) %>% t, rextra = rextra, textmax = textmax, nudge_x_col = nudge_x_var, flip = flip, row_col = ind_col, col_col = var_col)
 }
 
 #' @rdname getMoonplot
@@ -67,7 +67,7 @@ getMoonplot.MCA = function(result, rextra = .1, textmax = .2, nudge_x_var = .3, 
 #' res.ca = CA(children, row.sup = 15:18, col.sup = 6:8, graph = F)
 #' getMoonplot(res.ca, flip = T)
 getMoonplot.CA = function(result, rextra = .1, textmax = .2, nudge_x_col = .3, flip = F, label_rows = F, row_col = NULL, col_col = NULL){
-  getMoonplot_general(result$row$coord, result$col$coord, rextra = rextra, textmax = textmax, flip = flip, label_rows = label_rows, row_col = row_col, col_col = col_col)
+  getMoonplot_general(result$row$coord, apply(result$col$coord, 1, function(x) x / sqrt(t(result$eig[1:ncol(result$col$coord),1]))) %>% t, rextra = rextra, textmax = textmax, flip = flip, label_rows = label_rows, row_col = row_col, col_col = col_col)
 }
 
 getMoonplot_general = function(row_coords, col_coords, rextra = .1, textmax = .2, nudge_x_col = .3, flip = F, label_rows = F, row_col = NULL, col_col = NULL, rotate_col_text = T){
