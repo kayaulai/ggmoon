@@ -57,8 +57,8 @@ getMoonplot = function(result, ...){
 #' res.mca = MCA(tea, quanti.sup=19, quali.sup=20:36, graph = F)
 #' getMoonplot(res.mca, flip = T, row_col = tea[,20])
 
-getMoonplot.MCA = function(result, rextra = .1, textmax = .2, nudge_x_var = .3, flip = F, ind_col = NULL, var_col = NULL){
-  getMoonplot_general(result$ind$coord, apply(result$var$coord, 1, function(x) x / sqrt(t(result$eig[1:ncol(result$var$coord),1]))) %>% t, rextra = rextra, textmax = textmax, nudge_x_col = nudge_x_var, flip = flip, row_col = ind_col, col_col = var_col)
+getMoonplot.MCA = function(result, rextra = .1, textmax = .2, nudge_x_var = .3, flip = F, ind_col = NULL, var_col = NULL, ind_labels = NULL, var_labels = NULL){
+  getMoonplot_general(result$ind$coord, apply(result$var$coord, 1, function(x) x / sqrt(t(result$eig[1:ncol(result$var$coord),1]))) %>% t, rextra = rextra, textmax = textmax, nudge_x_col = nudge_x_var, flip = flip, row_col = ind_col, col_col = var_col, row_labels = ind_labels, col_labels = var_labels)
 }
 
 #' @rdname getMoonplot
@@ -66,11 +66,11 @@ getMoonplot.MCA = function(result, rextra = .1, textmax = .2, nudge_x_var = .3, 
 #' @examples data(children)
 #' res.ca = CA(children, row.sup = 15:18, col.sup = 6:8, graph = F)
 #' getMoonplot(res.ca, flip = T)
-getMoonplot.CA = function(result, rextra = .1, textmax = .2, nudge_x_col = .3, flip = F, label_rows = F, row_col = NULL, col_col = NULL){
-  getMoonplot_general(result$row$coord, apply(result$col$coord, 1, function(x) x / sqrt(t(result$eig[1:ncol(result$col$coord),1]))) %>% t, rextra = rextra, textmax = textmax, flip = flip, label_rows = label_rows, row_col = row_col, col_col = col_col)
+getMoonplot.CA = function(result, rextra = .1, textmax = .2, nudge_x_col = .3, flip = F, label_rows = F, row_col = NULL, col_col = NULL, row_labels = row_labels, col_labels = col_labels){
+  getMoonplot_general(result$row$coord, apply(result$col$coord, 1, function(x) x / sqrt(t(result$eig[1:ncol(result$col$coord),1]))) %>% t, rextra = rextra, textmax = textmax, flip = flip, label_rows = label_rows, row_col = row_col, row_labels = row_labels, col_labels = col_labels)
 }
 
-getMoonplot_general = function(row_coords, col_coords, rextra = .1, textmax = .2, nudge_x_col = .3, flip = F, label_rows = F, row_col = NULL, col_col = NULL, rotate_col_text = T){
+getMoonplot_general = function(row_coords, col_coords, rextra = .1, textmax = .2, nudge_x_col = .3, flip = F, label_rows = F, row_col = NULL, col_col = NULL, rotate_col_text = T, row_labels = NULL, col_labels = NULL){
   norms_row = sqrt((row_coords[,1])^2 + (row_coords[,2])^2)
   theta_row = atan(row_coords[,1] / row_coords[,2]) + (row_coords[,2] < 0) * pi + (row_coords[,2] > 0 & row_coords[,1] < 0) * 2 * pi
   quadrant = c(case_when(
@@ -86,6 +86,9 @@ getMoonplot_general = function(row_coords, col_coords, rextra = .1, textmax = .2
 
   row_df = data.frame(name = rownames(row_coords), theta_row, norms_row)
   col_df = data.frame(name = rownames(col_coords), theta_col, norms_col)
+  if(!is.null(row_labels)) row_df = row_df %>% mutate(name = row_labels)
+  if(!is.null(col_labels)) col_df = col_df %>% mutate(name = col_labels)
+
 
   point_aes = aes()
   if(!is.null(row_col)){
